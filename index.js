@@ -21,20 +21,19 @@ let persons = [
         "id": 3
     },
     {
-        "name": "Mary Poppendieck", 
+        "name": "Mary Poppendieck",
         "number": "39-23-6423122",
         "id": 4
     }
 ]
 
-app.get('/api/persons/', (request,response) => {
+app.get('/api/persons/', (request, response) => {
     response.json(persons)
 })
 
-app.get('/api/persons/:id', (request,response) => {
-    console.log('id',id)
+app.get('/api/persons/:id', (request, response) => {
     const person = persons.find(person => person.id === id)
-    if(person) {
+    if (person) {
         return response.json(person)
     } else {
         return response.status(404).end()
@@ -52,6 +51,38 @@ app.get('/info', (request, response) => {
     Phonebook has info for ${persons.length} people
     </div> 
     <div>${new Date()}</div>`)
+})
+
+const generateId = () => {
+    const randomId = Math.floor(Math.random() * (99999 - 0))
+    return randomId
+}
+
+const doesNameExist = (name) => {
+    return persons.find(person => person.name === name)
+}
+
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+
+    if (!body.name || !body.number) {
+        return response.status(404).json({
+            error: 'content missing'
+        })
+    } else if (doesNameExist(body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: generateId()
+    }
+
+    persons = persons.concat(person)
+    response.json(person)
 })
 
 
