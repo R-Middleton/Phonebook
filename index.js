@@ -20,7 +20,7 @@ let persons = [
         "id": 3
     },
     {
-        "name": "Mary Poppendieck",
+        "name": "Mary Poppendieck", 
         "number": "39-23-6423122",
         "id": 4
     }
@@ -28,6 +28,10 @@ let persons = [
 
 app.get('/api/persons/', (req,res) => {
     res.json(persons)
+})
+
+app.get('/info', (req, res) => {
+    res.send(`<div>Phonebook has info for ${persons.length} people</div> <div>${new Date()}</div>`)
 })
 
 
