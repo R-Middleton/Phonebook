@@ -1,8 +1,10 @@
 const express = require('express')
 const { response } = require('express')
 const app = express()
+const morgan = require('morgan')
 
 app.use(express.json())
+app.use(morgan('tiny'))
 
 let persons = [
     {
@@ -32,6 +34,7 @@ app.get('/api/persons/', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
     const person = persons.find(person => person.id === id)
     if (person) {
         return response.json(person)
