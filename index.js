@@ -3,8 +3,32 @@ const { response } = require('express')
 const app = express()
 const morgan = require('morgan')
 
+app.use(morgan((tokens, req,res) => {
+    return [
+        tokens.method(req, res),
+        tokens.url(req, res),
+        tokens.status(req, res),
+        tokens.res(req, res, 'content-length'), '-',
+        tokens['response-time'](req, res), 'ms',
+        tokens['personData'](req)
+    ].join(' ')
+}
+))
+
+morgan.token('personData', (req) => {
+    const person = JSON.stringify(req.body)
+    if(req.method === 'POST'){
+        return person
+    } else {
+        return ''
+    }
+})
+
 app.use(express.json())
-app.use(morgan('tiny'))
+
+morgan.token('host', (req,res) => {
+    return req.hostname;
+})
 
 let persons = [
     {
@@ -30,6 +54,7 @@ let persons = [
 ]
 
 app.get('/api/persons/', (request, response) => {
+    
     response.json(persons)
 })
 
