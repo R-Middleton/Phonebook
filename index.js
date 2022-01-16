@@ -1,6 +1,5 @@
 require('dotenv').config()
 const express = require('express')
-const { response } = require('express')
 const app = express()
 const morgan = require('morgan')
 const Person = require('./models/person')
@@ -37,7 +36,7 @@ app.use(express.json())
 const cors = require('cors')
 app.use(cors())
 
-morgan.token('host', (req, res) => {
+morgan.token('host', (req) => {
   return req.hostname
 })
 
@@ -75,7 +74,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then((result) => {
+    .then(() => {
       response.status(204).end()
     })
     .catch((error) => next(error))
@@ -84,7 +83,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 /* app.get('/info', (request, response) => {
   response.send(`<div>
     Phonebook has info for ${persons.length} people
-    </div> 
+    </div>
     <div>${new Date()}</div>`)
 }) */
 
